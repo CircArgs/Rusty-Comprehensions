@@ -2,7 +2,7 @@
 #### Generate vectors (+other structures) with a macro of similar syntax to list comprehensions in Python! + with localized declarations from Haskell
 
 [![codecov](https://codecov.io/gh/CircArgs/rust_list_comprehension/branch/master/graph/badge.svg)](https://codecov.io/gh/CircArgs/rust_list_comprehension)
-<img alt="Build Status" src="https://github.com/CircArgs/rust_list_comprehension/workflows/ci/badge.svg">
+<img alt="Build Status" src="https://github.com/CircArgs/rust_list_comprehension/workflows/test/badge.svg">
 <img alt="Language Rust" src="https://img.shields.io/badge/language-Rust-orange">
 <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-green">
 
