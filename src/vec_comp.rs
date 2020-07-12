@@ -89,5 +89,44 @@ macro_rules! vec_comp {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn test() {}
+    fn test_1itr() {
+        assert_eq!(vec_comp![x; for x in 1..4], vec![1, 2, 3])
+    }
+    #[test]
+    fn test_1itr_cond() {
+        assert_eq!(vec_comp![x; for x in 1..4; if x>1], vec![2, 3])
+    }
+    #[test]
+    fn test_1itr_1decl_cond() {
+        assert_eq!(
+            vec_comp![y; for x in 1..4; let y=x*x+4; if x>1],
+            vec![8, 13]
+        )
+    }
+    #[test]
+    fn test_1itr_1decl() {
+        assert_eq!(vec_comp![y; for x in 1..4; let y=x*x+4], vec![5, 8, 13])
+    }
+    #[test]
+    fn test_1itr_2decl_cond() {
+        assert_eq!(
+            vec_comp![y+z; for x in 1..4; let y=x*x+4; let z = 3*y+x; if z>20],
+            vec![34, 55]
+        )
+    }
+    #[test]
+    fn test_2itr_3decl_cond() {
+        assert_eq!(
+            vec_comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1],
+            vec![60, 86, 97, 139]
+        )
+    }
+    #[test]
+    fn test_2itr_3decl_cond_myvec() {
+        let myvec = vec![8, 6, 7, 5, 3, 0, 9];
+        assert_eq!(
+            vec_comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1; using myvec],
+            vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
+        )
+    }
 }
