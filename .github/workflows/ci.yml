@@ -22,15 +22,10 @@ jobs:
       - uses: actions-rs/grcov@v0.1
         with:
           config: configs/grcov.yml
-        volumes:
-          - .github:/.
+      - name: Show the coverage report
+        run: cat ${{ steps.coverage.outputs.report }}
       - uses: actions/checkout@master
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: ./lcov.info
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-        volumes:
-          - .github:/.
