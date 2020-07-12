@@ -1,6 +1,6 @@
 
 <h1> List Comprehensions in Rust </h1>
-<h4> Generate vectors (+other structures) with a macro of similar syntax to list comprehensions in Python! + with localized declarations from Haskell </h4>
+<h4 text-align="center"> Generate vectors (+other structures) with a macro of similar syntax to list comprehensions in Python! + with localized declarations from Haskell </h4>
 <div style={width: 100%} align="center">
 <img alt="codecov" src="https://codecov.io/gh/CircArgs/rust_list_comprehension/branch/master/graph/badge.svg)](https://codecov.io/gh/CircArgs/rust_list_comprehension">
 <img alt="Build Status" src="https://github.com/CircArgs/rust_list_comprehension/workflows/test/badge.svg">
