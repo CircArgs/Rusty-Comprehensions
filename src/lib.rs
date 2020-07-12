@@ -1,5 +1,1 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn test() {}
-}
+pub mod vec_comp;
