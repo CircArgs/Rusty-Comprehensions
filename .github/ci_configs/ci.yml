@@ -1,4 +1,4 @@
 ignore:
-  - "*/main.rs"
+  - "main.rs"
 output-type: lcov
 output-path: ./lcov.info
