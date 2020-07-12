@@ -3,19 +3,37 @@
 
 [![codecov](https://codecov.io/gh/CircArgs/rust_list_comprehension/branch/master/graph/badge.svg)](https://codecov.io/gh/CircArgs/rust_list_comprehension)
 
+TLDR Examples:
+
 ```rust
+//KEY:
+//title
+example // vec! equivalent
+
+//basic
 vec_comp![x; for x in 1..4] //vec![1, 2, 3]
-    
+
+//conditioning
 vec_comp![x; for x in 1..4; if x>1] //vec![2, 3]
-    
-vec_comp![y; for x in 1..4; let y=x*x+4; if x>1] //vec![8, 13]
-        
+
+//localized declarations
 vec_comp![y; for x in 1..4; let y=x*x+4] //vec![5, 8, 13]
-    
+
+//localized declarations w/ conditioning
+vec_comp![y; for x in 1..4; let y=x*x+4; if x>1] //vec![8, 13]
+
+//multiple localized declarations w/ conditioning
 vec_comp![y+z; for x in 1..4; let y=x*x+4; let z = 3*y+x; if z>20] //vec![34, 55]
-        
+
+//multiple iterators and multiple localized declarations w/ conditioning
 vec_comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1] //vec![60, 86, 97, 139]
 
+//use existing vector (e.g. can preallocate and touch memory to prevent any reallocation if you know the size of the final vector beforehand)
 let myvec = vec![8, 6, 7, 5, 3, 0, 9];
 vec_comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1; using myvec] //vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
+
+
+//use custom data structures with .push method
+let linked_list = LinkedList::new();
+vec_comp![x; for x in 1..4; using linked_list] //Node(1) -> Node(2) -> Node(3)
 ```
