@@ -6,9 +6,6 @@
 TLDR Examples:
 
 ```rust
-//KEY:
-//title
-example // vec! equivalent
 
 //basic
 vec_comp![x; for x in 1..4] //vec![1, 2, 3]
