@@ -32,5 +32,5 @@ comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz
 
 //use custom data structures with .push method
 let linked_list = LinkedList::new();
-vec_comp![x; for x in 1..4; using linked_list] //Node(1) -> Node(2) -> Node(3)
+comp![x; for x in 1..4; using linked_list] //Node(1) -> Node(2) -> Node(3)
 ```
