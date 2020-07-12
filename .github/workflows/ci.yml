@@ -1,4 +1,4 @@
-on: [pull-request, push]
+on: push
 
 name: Code Coverage
 
