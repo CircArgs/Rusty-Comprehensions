@@ -20,6 +20,9 @@ comp![x; for x in 1..4] //vec![1, 2, 3]
 //use anything implementing Iterator or IntoIterator (or any trait accepted by traditional `for` loops)
 comp![x; for x in vec![8, 6, 7, 5, 3, 0, 9]] //vec![8, 6, 7, 5, 3, 0, 9]
 
+//tuples (of any length - length 2 shown)
+comp![(x, y); for (x,y) in (1..4).zip(1..4)] //vec![(1, 1), (2, 2), (3, 3)]
+
 //conditioning (filtering)
 comp![x; for x in 1..4; if x>1] //vec![2, 3]
 
