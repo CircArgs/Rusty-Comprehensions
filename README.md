@@ -26,6 +26,9 @@ comp![x; for x in 1..4; if x>1] //vec![2, 3]
 //localized declarations
 comp![y; for x in 1..4; let y=x*x+4] //vec![5, 8, 13]
 
+//nesting
+comp![comp![y2+z2; for x2 in 1..x; let y2=x*x+4; let z2 = 3*y+x; if z2>20]; for x in 1..4; let y=x*x+4; if x>1] //vec![vec![34], vec![55, 55]]
+
 //localized declarations w/ conditioning
 comp![y; for x in 1..4; let y=x*x+4; if x>1] //vec![8, 13]
 
@@ -41,7 +44,6 @@ comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; if x>1; for yy in 1..10
 //use existing vector (e.g. can preallocate and touch memory to prevent any reallocation if you know the size of the final vector beforehand)
 let myvec = vec![8, 6, 7, 5, 3, 0, 9];
 comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1; using myvec] //vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
-
 
 //use custom data structures with .push method
 let linked_list = LinkedList::new();
