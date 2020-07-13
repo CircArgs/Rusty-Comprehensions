@@ -35,6 +35,9 @@ comp![y+z; for x in 1..4; let y=x*x+4; let z = 3*y+x; if z>20] //vec![34, 55]
 //multiple iterators and multiple localized declarations w/ conditioning
 comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1] //vec![60, 86, 97, 139]
 
+//the same thing can be written using a split conditional to reduce the number of outer loops
+comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; if x>1; for yy in 1..10; let zz= yy+1; if yy<3] //vec![60, 86, 97, 139]
+
 //use existing vector (e.g. can preallocate and touch memory to prevent any reallocation if you know the size of the final vector beforehand)
 let myvec = vec![8, 6, 7, 5, 3, 0, 9];
 comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; for yy in 1..10; let zz= yy+1; if yy<3 && x>1; using myvec] //vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
