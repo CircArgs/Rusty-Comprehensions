@@ -154,4 +154,11 @@ mod tests {
             vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
         )
     }
+    #[test]
+    fn test_nesting() {
+        assert_eq!(
+            comp![comp![y2+z2; for x2 in 1..x; let y2=x*x+4; let z2 = 3*y+x; if z2>20]; for x in 1..4; let y=x*x+4; if x>1],
+            vec![vec![34], vec![55, 55]]
+        )
+    }
 }
