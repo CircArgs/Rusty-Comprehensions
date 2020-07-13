@@ -20,10 +20,10 @@ comp![x; for x in 1..4] //vec![1, 2, 3]
 //use anything implementing Iterator or IntoIterator (or any trait accepted by traditional `for` loops)
 comp![x; for x in vec![8, 6, 7, 5, 3, 0, 9]] //vec![8, 6, 7, 5, 3, 0, 9]
 
-//conditioning
+//conditioning (filtering)
 comp![x; for x in 1..4; if x>1] //vec![2, 3]
 
-//localized declarations
+//localized declarations (like haskell)
 comp![y; for x in 1..4; let y=x*x+4] //vec![5, 8, 13]
 
 //nesting
