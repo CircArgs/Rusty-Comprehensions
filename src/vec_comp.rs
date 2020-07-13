@@ -140,6 +140,13 @@ mod tests {
         )
     }
     #[test]
+    fn test_2itr_3decl_cond_per() {
+        assert_eq!(
+            comp![y+zz*z; for x in 1..4; let y=x*x+4; let z = 3*y+x; if x>1; for yy in 1..10; let zz= yy+1; if yy<3],
+            vec![60, 86, 97, 139]
+        )
+    }
+    #[test]
     fn test_2itr_3decl_cond_myvec() {
         let myvec = vec![8, 6, 7, 5, 3, 0, 9];
         assert_eq!(
