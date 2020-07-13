@@ -22,7 +22,7 @@ macro_rules! comp {
     //========================II: multi iterator case=============================
     // A: base case for multi iterator - let statement pairs WITH conditional
     // Ex. comp![y*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = 45; if x*zz>45] >> [4, 8, 12, 9, 18, 27, 36, 45, 54, 63, 72]
-     ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*)+; if $cond: expr $(;)*) => {{
+     ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* ; if $condx: expr $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*; if $condy: expr)+ $(;)*) => {{
         // boilerplate uses x and looks nearly identical to A
         let mut myvec = Vec::new();
         let iter=$iterx;
@@ -30,40 +30,59 @@ macro_rules! comp {
             $(let $s = $v;)*
             // recurse for y iterators and lets
             // calling case G until hit the single iterator case and then call F
-            comp![$f $(;for $y in $itery $(;let $t = $w)*)+; if $cond; myvec]
+            if $condx{
+                comp![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec]
+            }
         }
         myvec
     }};
-    // B: base case for multi iterator - let statement pairs WITHOUT conditional
+    // B: base case for multi iterator - let statement pairs WITHOUT x conditional
     // simply wraps A as I-B did I-A
     // Ex. comp![zz*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = x*y; if y > 4] [27, 54, 81, 108, 135, 162, 189, 216]
-    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*)+ $(;)*) => {
-        comp![$f; for $x in $iterx $(; let $s = $v)* $(; for $y in $itery $(;let $t = $w)*)*; if true]
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*; if $condy: expr)+ $(;)*) => {
+        comp![$f; for $x in $iterx $(; let $s = $v)*; if true $(; for $y in $itery $(;let $t = $w)*; if $condy)+]
     };
+    // C:  WITHOUT any conditional(s)
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*)+ $(;)*) => {
+        comp![$f; for $x in $iterx $(; let $s = $v)*; if true $(; for $y in $itery $(;let $t = $w)*; if true)+]
+    };
+    // D:  WITHOUT y conditional(s)
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)*; if $condx: expr $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*)+ $(;)*) => {
+        comp![$f; for $x in $iterx $(; let $s = $v)*; if $condx $(; for $y in $itery $(;let $t = $w)*; if true)+]
+    };
+
+
     //========================III: w/ preallocated vectors=============================
-    // A: given a user preallocated vector base case w/ conditional
-    // Ex. let myvec = comp![zz*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = x*y; if y > 4; using Vec::new()];
-    ($f: expr; for $x: ident in $iterx:expr $(;let $s: ident = $v:expr)* $(;for $y: ident in $itery:expr $(;let $t: ident = $w:expr)*)+; if $cond:expr; using $myvec: expr $(;)*) => {{
-        let mut myvec=$myvec;
+    // A: base case for multi iterator - let statement pairs WITH conditional
+    // Ex. comp![y*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = 45; if x*zz>45] >> [4, 8, 12, 9, 18, 27, 36, 45, 54, 63, 72]
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* ; if $condx: expr $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*; if $condy: expr)+; using $myvec: expr $(;)*) => {{
+        // boilerplate uses x and looks nearly identical to A
+        let mut myvec = $myvec;
         let iter=$iterx;
         for $x in iter {
             $(let $s = $v;)*
-            comp![$f $(; for $y in $itery $(;let $t = $w)*)+; if $cond; myvec]
+            // recurse for y iterators and lets
+            // calling case G until hit the single iterator case and then call F
+            if $condx{
+                comp![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec]
+            }
         }
         myvec
     }};
-    // B: simply wraps A as I-B did I-A
-    // Ex.     let mut myvec = vec![8, 6, 7, 5, 3, 0, 9];
-    //         myvec = comp![zz*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = x*y; if true; using myvec];
-    ($f: expr; for $x: ident in $iterx:expr $(;let $s: ident = $v:expr)* $(;for $y: ident in $itery:expr $(;let $t: ident = $w:expr)*)+; using $myvec: expr $(;)*) => {{
-        let mut myvec=$myvec;
-        let iter=$iterx;
-        for $x in iter {
-            $(let $s = $v;)*
-            comp![$f $(; for $y in $itery $(;let $t = $w)*)+; if true; myvec]
-        }
-        myvec
-    }};
+    // B: base case for multi iterator - let statement pairs WITHOUT x conditional
+    // simply wraps A as I-B did I-A
+    // Ex. comp![zz*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = x*y; if y > 4] [27, 54, 81, 108, 135, 162, 189, 216]
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*; if $condy: expr)+ ; using $myvec: expr $(;)*) => {
+        comp![$f; for $x in $iterx $(; let $s = $v)*; if true $(; for $y in $itery $(;let $t = $w)*; if $condy)+; using $myvec]
+    };
+    // C:  WITHOUT any conditional(s)
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)* $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*)+ ; using $myvec: expr $(;)*) => {
+        comp![$f; for $x in $iterx $(; let $s = $v)*; if true $(; for $y in $itery $(;let $t = $w)*; if true)+; using $myvec]
+    };
+    // D:  WITHOUT y conditional(s)
+    ($f: expr; for $x: ident in $iterx:expr $(; let $s: ident = $v:expr)*; if $condx: expr $(; for $y: ident in $itery:expr $(; let $t: ident = $w:expr)*)+ ; using $myvec: expr $(;)*) => {
+        comp![$f; for $x in $iterx $(; let $s = $v)*; if $condx $(; for $y in $itery $(;let $t = $w)*; if true)+; using $myvec]
+    };
     //========================IV: used as helpers to above=============================
     // A: iterator helper base case (innermost nested loop i.e. last iterator after expanding multi iterator scenario)
     // used for recursive expansion of nested for loops once number of iterators in macro hits 1
@@ -78,11 +97,13 @@ macro_rules! comp {
     }};
     // B:  helper used to build nesting in multi iterator scenario. only called with 2+ iterators e.g. for ... in ...
     // Ex. let mut myvec = Vec::new()
-    ($f: expr; for $x: ident in $iterx:expr $(;let $s: ident = $v:expr)* $(;for $y: ident in $itery:expr $(;let $t: ident = $w:expr)*)+; if $cond: expr; $myvec: ident $(;)*) => {{
+    ($f: expr; for $x: ident in $iterx:expr $(;let $s: ident = $v:expr)*; if $condx: expr $(;for $y: ident in $itery:expr $(;let $t: ident = $w:expr)*; if $condy: expr)+; $myvec: ident $(;)*) => {{
         let iter=$iterx;
         for $x in iter {
             $(let $s = $v;)*
-            comp![$f $(; for $y in $itery $(;let $t = $w;)*)+; if $cond; $myvec]
+            if $condx{
+                comp![$f $(; for $y in $itery $(;let $t = $w;)*; if $condy)+; $myvec]
+            }
         }
     }};
 }
