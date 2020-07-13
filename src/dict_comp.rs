@@ -4,8 +4,8 @@ macro_rules! dcomp {
     // A: base case of iterator, any number of localized lets and finally a conditional
     // Ex. dcomp![x; for x in 1..4; if x>1 ] >> [2, 3]
     ($fk: expr => $fv: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $cond: expr $(;)*) => {{
-        use std::collections::HashMap;
-        let mut mymap = HashMap::new();
+
+        let mut mymap = std::collections::HashMap::new();
         let iter=$iterx;
         for $x in iter {
             $(let $s = $v;)*
@@ -25,8 +25,7 @@ macro_rules! dcomp {
     // Ex. dcomp![y*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = 45; if x*zz>45] >> [4, 8, 12, 9, 18, 27, 36, 45, 54, 63, 72]
      ($fk: expr => $fv: expr; for $x: pat in $iterx:expr $(; let $s: ident = $v:expr)* ; if $condx: expr $(; for $y: pat in $itery:expr $(; let $t: ident = $w:expr)*; if $condy: expr)+ $(;)*) => {{
         // boilerplate uses x and looks nearly identical to A
-        use std::collections::HashMap;
-        let mut mymap = HashMap::new();
+        let mut mymap = std::collections::HashMap::new();
         let iter=$iterx;
         for $x in iter {
             $(let $s = $v;)*
