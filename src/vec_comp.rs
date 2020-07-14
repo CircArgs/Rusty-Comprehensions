@@ -3,22 +3,22 @@ macro_rules! comp {
 
     //outward facing pattern:
     // f is value dumped into vec
-    // tail token tree placeholder for generic for (lets) (if) pattern
+    // rest token tree placeholder for generic for (lets) (if) pattern
     // sets up vec to push to
-    ($f:expr; $($tail:tt)+) => {{
+    ($f:expr; $($rest:tt)+) => {{
         let mut myvec = Vec::new();
-        comp![@INTERNAL(myvec) $f; $($tail)+];
+        comp![@INTERNAL(myvec) $f; $($rest)+];
         myvec
     }};
-    // //outward facing pattern for given datatype
-    // // f is value dumped into vec
-    // // tail token tree placeholder for generic for (lets) (if) pattern
-    // // sets up vec to push to
-    // ($f:expr; $($tail:tt)+; using $myvec: ident) => {{
-    //     let mut myvec = $myvec;
-    //     comp![@INTERNAL(myvec) $f, $($tail)+];
-    //     myvec
-    // }};
+    //outward facing pattern for given datatype
+    // f is value dumped into vec
+    // rest token tree placeholder for generic for (lets) (if) pattern
+    // sets up vec to push to
+    (using $myvec: expr , $f:expr; $($rest:tt)+) => {{
+        let mut myvec = $myvec;
+        comp![@INTERNAL(myvec) $f; $($rest)+];
+        myvec
+    }};
     //================================INTERNAL Patterns===========================================
     // BASE CASE WITH IF
     // internal pattern for iter (lets) if
@@ -38,19 +38,19 @@ macro_rules! comp {
     };
     // Recurse case
     // internal pattern for iter (lets) if; repeat+ (1 or more times i.e. not base case)
-    (@INTERNAL($myvec:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*, if $cond:expr; $($tail:tt)+) => {
+    (@INTERNAL($myvec:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*, if $cond:expr; $($rest:tt)+) => {
         let iter = $iterx;
         for $x in iter{
             $(let $v = $vv;)*
             if $cond {
-                comp![@INTERNAL($myvec) $f; $($tail)+];
+                comp![@INTERNAL($myvec) $f; $($rest)+];
             }
         }
     };
     // Recurse case
     // internal pattern for iter (lets) if; repeat+ (1 or more times i.e. not base case)
-    (@INTERNAL($myvec:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*; $($tail:tt)+) => {
-        comp![@INTERNAL($myvec) $f; for $x in $iterx $(,let $v = $vv)*, if true; $($tail)+ ];
+    (@INTERNAL($myvec:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*; $($rest:tt)+) => {
+        comp![@INTERNAL($myvec) $f; for $x in $iterx $(,let $v = $vv)*, if true; $($rest)+ ];
     };
 
 }
@@ -93,14 +93,14 @@ mod tests {
             vec![60, 86, 97, 139]
         )
     }
-    // #[test]
-    // fn test_2itr_3decl_cond_using() {
-    //     let myvec = vec![8, 6, 7, 5, 3, 0, 9];
-    //     assert_eq!(
-    //         comp![y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x; for yy in 1..10, let zz= yy+1, if yy<3 && x>1; using myvec],
-    //         vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
-    //     )
-    // }
+    #[test]
+    fn test_2itr_3decl_cond_using() {
+        let myvec = vec![8, 6, 7, 5, 3, 0, 9];
+        assert_eq!(
+            comp![using myvec, y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x; for yy in 1..10, let zz= yy+1, if yy<3 && x>1],
+            vec![8, 6, 7, 5, 3, 0, 9, 60, 86, 97, 139]
+        )
+    }
     #[test]
     fn test_nesting() {
         assert_eq!(
