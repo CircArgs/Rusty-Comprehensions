@@ -62,7 +62,7 @@ macro_rules! comp_pre {
         let iter=std::iter::IntoIterator::into_iter($iterx);
         if ($depth) >= $tot_depth{
             $tot_depth+=1;
-            $myvec.reserve($cap*iter.size_hint().0)
+            $myvec.reserve($cap*iter.size_hint().0);
         };
         for $x in iter {
             $(let $s = $v;)*

@@ -31,7 +31,7 @@ macro_rules! comp {
             // recurse for y iterators and lets
             // calling case G until hit the single iterator case and then call F
             if $condx{
-                comp![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec]
+                comp![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec @INTERNAL]
             }
         }
         myvec
@@ -64,7 +64,7 @@ macro_rules! comp {
             // recurse for y iterators and lets
             // calling case G until hit the single iterator case and then call F
             if $condx{
-                comp![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec]
+                comp![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec @INTERNAL]
             }
         }
         myvec
@@ -86,7 +86,7 @@ macro_rules! comp {
     //========================IV: used as helpers to above=============================
     // A: iterator helper base case (innermost nested loop i.e. last iterator after expanding multi iterator scenario)
     // used for recursive expansion of nested for loops once number of iterators in macro hits 1
-    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $cond: expr; $myvec: ident $(;)*) => {{
+    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $cond: expr; $myvec: ident @INTERNAL) => {{
         let iter=$iterx;
         for $x in iter {
             $(let $s = $v;)*
@@ -97,12 +97,12 @@ macro_rules! comp {
     }};
     // B:  helper used to build nesting in multi iterator scenario. only called with 2+ iterators e.g. for ... in ...
     // Ex. let mut myvec = Vec::new()
-    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $condx: expr $(;for $y: pat in $itery:expr $(;let $t: ident = $w:expr)*; if $condy: expr)+; $myvec: ident $(;)*) => {{
+    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $condx: expr $(;for $y: pat in $itery:expr $(;let $t: ident = $w:expr)*; if $condy: expr)+; $myvec: ident @INTERNAL) => {{
         let iter=$iterx;
         for $x in iter {
             $(let $s = $v;)*
             if $condx{
-                comp![$f $(; for $y in $itery $(;let $t = $w;)*; if $condy)+; $myvec]
+                comp![$f $(; for $y in $itery $(;let $t = $w;)*; if $condy)+; $myvec @INTERNAL]
             }
         }
     }};
