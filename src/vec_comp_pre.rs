@@ -4,9 +4,7 @@ macro_rules! comp_pre {
     // A: base case of iterator, any number of localized lets and finally a conditional
     // Ex. comp_pre![x; for x in 1..4; if x>1 ] >> [2, 3]
     ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $cond: expr $(;)*) => {{
-        let __SYNC_OBJ = std::sync::Once::new();
         let iter=std::iter::IntoIterator::into_iter($iterx);
-        println!("x {:?}", iter.size_hint().0);
         let mut myvec = Vec::with_capacity(iter.size_hint().0);
         for $x in iter {
             $(let $s = $v;)*
@@ -16,6 +14,7 @@ macro_rules! comp_pre {
         }
         myvec
     }};
+
     // B: A without a conditional; bootstraps A to be called with condition of true
     // Ex. comp_pre![x; for x in 1..4] >> [1, 2, 3]
     ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)* $(;)*) => {{
@@ -26,16 +25,16 @@ macro_rules! comp_pre {
     // Ex. comp_pre![y*z; for x in 1..4; let y = x*x; for z in 1..y; let zz = 45; if x*zz>45] >> [4, 8, 12, 9, 18, 27, 36, 45, 54, 63, 72]
      ($f: expr; for $x: pat in $iterx:expr $(; let $s: ident = $v:expr)* ; if $condx: expr $(; for $y: pat in $itery:expr $(; let $t: ident = $w:expr)*; if $condy: expr)+ $(;)*) => {{
         // boilerplate uses x and looks nearly identical to A
-        let __SYNC_OBJ = std::sync::Once::new();
+        let mut tot_depth: usize = 0;
         let iter=std::iter::IntoIterator::into_iter($iterx);
-        println!("x {:?}", iter.size_hint().0);
-        let mut myvec = Vec::with_capacity(iter.size_hint().0);
+        let mut cap: usize = iter.size_hint().0;
+        let mut myvec = Vec::new();
         for $x in iter {
             $(let $s = $v;)*
             // recurse for y iterators and lets
             // calling case G until hit the single iterator case and then call F
             if $condx{
-                comp_pre![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec; __SYNC_OBJ]
+                comp_pre![$f $(;for $y in $itery $(;let $t = $w)*; if $condy)+; myvec; 0; tot_depth; cap @INTERNAL]
             }
         }
         myvec
@@ -59,12 +58,12 @@ macro_rules! comp_pre {
     //========================III: used as helpers to above=============================
     // A: iterator helper base case (innermost nested loop i.e. last iterator after expanding multi iterator scenario)
     // used for recursive expansion of nested for loops once number of iterators in macro hits 1
-    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $cond: expr; $myvec: ident; $SYNC_OBJ: ident $(;)*) => {{
+    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $cond: expr; $myvec: ident; $depth: expr; $tot_depth: ident; $cap: ident @INTERNAL) => {{
         let iter=std::iter::IntoIterator::into_iter($iterx);
-        $SYNC_OBJ.call_once(|| {
-            println!("{:?}", iter.size_hint().0);
-            $myvec.reserve(iter.size_hint().0)
-        });
+        if ($depth) >= $tot_depth{
+            $tot_depth+=1;
+            $myvec.reserve($cap*iter.size_hint().0)
+        };
         for $x in iter {
             $(let $s = $v;)*
             if $cond {
@@ -74,16 +73,17 @@ macro_rules! comp_pre {
     }};
     // B:  helper used to build nesting in multi iterator scenario. only called with 2+ iterators e.g. for ... in ...
     // Ex. let mut myvec = Vec::new()
-    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $condx: expr $(;for $y: pat in $itery:expr $(;let $t: ident = $w:expr)*; if $condy: expr)+; $myvec: ident; $SYNC_OBJ: ident $(;)*) => {{
+    ($f: expr; for $x: pat in $iterx:expr $(;let $s: ident = $v:expr)*; if $condx: expr $(;for $y: pat in $itery:expr $(;let $t: ident = $w:expr)*; if $condy: expr)+; $myvec: ident; $depth: expr; $tot_depth: ident; $cap: ident @INTERNAL) => {{
         let iter=std::iter::IntoIterator::into_iter($iterx);
-        $SYNC_OBJ.call_once(|| {
-            println!("{:?}", iter.size_hint().0);
-            $myvec.reserve(iter.size_hint().0)
-        });
+        if ($depth) >= $tot_depth{
+            $tot_depth+=1;
+            $cap*=iter.size_hint().0;
+        };
+
         for $x in iter {
             $(let $s = $v;)*
             if $condx{
-                comp_pre![$f $(; for $y in $itery $(;let $t = $w;)*; if $condy)+; $myvec]
+                comp_pre![$f $(; for $y in $itery $(;let $t = $w;)*; if $condy)+; $myvec; $depth + 1; $tot_depth; $cap @INTERNAL]
             }
         }
     }};
