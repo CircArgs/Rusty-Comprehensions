@@ -107,7 +107,7 @@ mod tests {
     #[test]
     fn test_nesting() {
         assert_eq!(
-            dcomp![x => dcomp![x => y2+z2; for x2 in 1..x, let y2=x*x+4, let z2 = 3*y+x, if z2>20]; for x in 1..4, let y=x*x+4, if x>1],
+            dcomp![x => dcomp![x => y2+z2; for _x2 in 1..x, let y2=x*x+4, let z2 = 3*y+x, if z2>20]; for x in 1..4, let y=x*x+4, if x>1],
             dict! {2=> dict!{2=> 34}, 3=> dict!{3=> 55}}
         )
     }
@@ -121,7 +121,7 @@ mod tests {
     #[test]
     fn test_complicated() {
         assert_eq!(
-            dcomp![x=>y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 1..10, let zz= yy+1; for yyy in 1..10, if yy>7; for i in 1..3],
+            dcomp![x=>y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 1..10, let zz= yy+1; for _yyy in 1..10, if yy>7; for _i in 1..3],
             dict! {3=> 433, 2=> 268}
         )
     }

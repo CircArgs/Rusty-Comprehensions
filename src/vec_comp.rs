@@ -104,7 +104,7 @@ mod tests {
     #[test]
     fn test_nesting() {
         assert_eq!(
-            comp![comp![y2+z2; for x2 in 1..x, let y2=x*x+4, let z2 = 3*y+x, if z2>20]; for x in 1..4, let y=x*x+4, if x>1],
+            comp![comp![y2+z2; for _x2 in 1..x, let y2=x*x+4, let z2 = 3*y+x, if z2>20]; for x in 1..4, let y=x*x+4, if x>1],
             vec![vec![34], vec![55, 55]]
         )
     }
@@ -118,7 +118,7 @@ mod tests {
     #[test]
     fn test_complicated() {
         assert_eq!(
-            comp![y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 1..10, let zz= yy+1; for yyy in 1..10, if yy>7; for i in 1..3],
+            comp![y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 1..10, let zz= yy+1; for _yyy in 1..10, if yy>7; for _i in 1..3],
             vec![
                 242, 242, 242, 242, 242, 242, 242, 242, 242, 242, 242, 242, 242, 242, 242, 242,
                 242, 242, 268, 268, 268, 268, 268, 268, 268, 268, 268, 268, 268, 268, 268, 268,

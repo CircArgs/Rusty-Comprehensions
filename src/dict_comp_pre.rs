@@ -4,7 +4,7 @@ macro_rules! dcomp_pre {
     //outward facing pattern:
     // f is value dumped into vec
     // rest token tree placeholder for generic for (lets) (if) pattern
-    // sets up vec to push to
+    // sets up hashmap to push to
     ($fk: expr => $fv: expr; $($rest:tt)+) => {{
         let mut _tot_depth: usize = 0;
         let mut _cap: usize = 1;
@@ -113,7 +113,7 @@ mod tests {
     #[test]
     fn test_nesting() {
         assert_eq!(
-            dcomp_pre![x => dcomp_pre![x => y2+z2; for x2 in 1..x, let y2=x*x+4, let z2 = 3*y+x, if z2>20]; for x in 1..4, let y=x*x+4, if x>1],
+            dcomp_pre![x => dcomp_pre![x => y2+z2; for _x2 in 1..x, let y2=x*x+4, let z2 = 3*y+x, if z2>20]; for x in 1..4, let y=x*x+4, if x>1],
             dict! {2=> dict!{2=> 34}, 3=> dict!{3=> 55}}
         )
     }
@@ -127,7 +127,7 @@ mod tests {
     #[test]
     fn test_complicated() {
         assert_eq!(
-            dcomp_pre![x=>y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 1..10, let zz= yy+1; for yyy in 1..10, if yy>7; for i in 1..3],
+            dcomp_pre![x=>y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 1..10, let zz= yy+1; for _yyy in 1..10, if yy>7; for _i in 1..3],
             dict! {3=> 433, 2=> 268}
         )
     }
