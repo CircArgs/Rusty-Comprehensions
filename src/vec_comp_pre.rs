@@ -6,10 +6,10 @@ macro_rules! comp_pre {
     // rest token tree placeholder for generic for (lets) (if) pattern
     // sets up vec to push to
     ($f:expr; $($rest:tt)+) => {{
-        let mut tot_depth: usize = 0;
-        let mut cap: usize = 0;
+        let mut _tot_depth: usize = 0;
+        let mut _cap: usize = 1;
         let mut myvec = Vec::new();
-        comp_pre![@INTERNAL(myvec, 0, tot_depth, cap) $f; $($rest)+];
+        comp_pre![@INTERNAL(myvec, 0, _tot_depth, _cap) $f; $($rest)+];
         myvec
     }};
 
@@ -18,7 +18,7 @@ macro_rules! comp_pre {
     // internal pattern for iter (lets) if
     (@INTERNAL($myvec:ident, $depth: expr, $tot_depth:ident, $cap:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*, if $cond:expr) => {
         let iter=std::iter::IntoIterator::into_iter($iterx);
-        if ($depth) >= $tot_depth{
+        if ($depth) == $tot_depth{
             $tot_depth+=1;
             $myvec.reserve($cap*iter.size_hint().0);
         };
@@ -32,13 +32,13 @@ macro_rules! comp_pre {
     // BASE CASE WITHOUT IF
     // internal pattern for iter (lets) NO if (calls version with if as true. comp_preiler will optmize it away)
     (@INTERNAL($myvec:ident, $depth: expr, $tot_depth:ident, $cap:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*) => {
-        comp_pre![@INTERNAL($myvec, $depth+1, $tot_depth, $cap) $f; for $x in $iterx $(,let $v = $vv)*, if true ];
+        comp_pre![@INTERNAL($myvec, $depth, $tot_depth, $cap) $f; for $x in $iterx $(,let $v = $vv)*, if true ];
     };
     // Recurse case
     // internal pattern for iter (lets) if; repeat+ (1 or more times i.e. not base case)
     (@INTERNAL($myvec:ident, $depth: expr, $tot_depth:ident, $cap:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*, if $cond:expr; $($rest:tt)+) => {
         let iter=std::iter::IntoIterator::into_iter($iterx);
-        if ($depth) >= $tot_depth{
+        if ($depth) == $tot_depth{
             $tot_depth+=1;
             $cap*=iter.size_hint().0;
         };
@@ -52,7 +52,7 @@ macro_rules! comp_pre {
     // Recurse case
     // internal pattern for iter (lets) if; repeat+ (1 or more times i.e. not base case)
     (@INTERNAL($myvec:ident, $depth: expr, $tot_depth:ident, $cap:ident) $f:expr; for $x:pat in $iterx:expr $(,let $v: ident = $vv: expr)*; $($rest:tt)+) => {
-        comp_pre![@INTERNAL($myvec, $depth+1, $tot_depth, $cap) $f; for $x in $iterx $(,let $v = $vv)*, if true; $($rest)+ ];
+        comp_pre![@INTERNAL($myvec, $depth, $tot_depth, $cap) $f; for $x in $iterx $(,let $v = $vv)*, if true; $($rest)+ ];
     };
 
 }

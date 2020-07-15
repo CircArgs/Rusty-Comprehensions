@@ -1,10 +1,10 @@
 #[macro_export]
 macro_rules! dict_pre {
     ($k: expr => $v: expr $(,$fk: expr => $fv: expr)*) => {{
-        let mut tot_count: usize = 0;
+        let mut _tot_count: usize = 0;
         let mut mydict= std::collections::HashMap::new();
         mydict.insert($k, $v);
-        dict_pre!{@INTERNAL(mydict, tot_count) $($fk => $fv, )*}
+        dict_pre!{@INTERNAL(mydict, _tot_count) $($fk => $fv, )*}
         mydict
     }};
     (@INTERNAL($mydict: ident, $tot_count: ident) $k: expr => $v: expr $(,$fk: expr => $fv: expr)+ $(,)*) => {
