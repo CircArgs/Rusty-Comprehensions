@@ -9,7 +9,26 @@
 <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-green">
 </div>
 
-
+# Index
+[TLDR;](#tldr)
+* [Macros](#macros)
+* [Vector (list) Comprehensions](#vector-list-comprehensions)
+  + [`comp!`](#comp)
+  + [Examples](#ex)
+* [HashMap (dictionary) Comprehensions](#hashmap-dictionary-comprehensions)
+  + [`dcomp!`](#dcomp)
+  + [Examples](#ex-1)
+* [HashMap (dictionary) Literal](#hashmap-dictionary-literal)
+  + [`dict!`](#dict)
+- [Preallocation Variants](#preallocation-variants)
+* [Preallocating Vector (list) Comprehensions](#preallocating-vector-list-comprehensions)
+  + [`comp_pre!`](#comp_pre)
+* [Preallocating HashMap (dictionary) Comprehensions](#preallocating-hashmap-dictionary-comprehensions)
+  + [`dcomp_pre!`](#dcomp_pre)
+* [Preallocating HashMap (dictionary) Literal](#preallocating-hashmap-dictionary-literal)
+  + [`dict_pre!`](#dict_pre)
+    - [Examples](#ex-2)
+    
 # TLDR;
 - A set of macros to emulate list/array and dictionary/hashtable comprehensions with syntax inspired primarily by Python
 - Variants for **preallocation of memory**. Remove reallocation initiated by many `push`es or `insert`s
@@ -29,24 +48,7 @@
 - preallocated hashmap (dict) literal `dict_pre!{2=> dict_pre!{2 => 34}, 3 => dict_pre!{3 => 55}} -> HashMap {2 : {2 : 34}, 3: {3 : 55}}`
 
 
-- [TLDR;](#tldr)
-  * [Macros](#macros)
-  * [Vector (list) Comprehensions](#vector-list-comprehensions)
-    + [`comp!`](#comp)
-    + [Examples](#ex)
-  * [HashMap (dictionary) Comprehensions](#hashmap-dictionary-comprehensions)
-    + [`dcomp!`](#dcomp)
-    + [Examples](#ex-1)
-  * [HashMap (dictionary) Literal](#hashmap-dictionary-literal)
-    + [`dict!`](#dict)
-- [Preallocation Variants](#preallocation-variants)
-  * [Preallocating Vector (list) Comprehensions](#preallocating-vector-list-comprehensions)
-    + [`comp_pre!`](#comp_pre)
-  * [Preallocating HashMap (dictionary) Comprehensions](#preallocating-hashmap-dictionary-comprehensions)
-    + [`dcomp_pre!`](#dcomp_pre)
-  * [Preallocating HashMap (dictionary) Literal](#preallocating-hashmap-dictionary-literal)
-    + [`dict_pre!`](#dict_pre)
-      - [Examples](#ex-2)
+
 
 ## Vector (list) Comprehensions
 ### `comp!`
