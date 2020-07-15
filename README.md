@@ -29,8 +29,27 @@
 - preallocated hashmap (dict) literal `dict_pre!{2=> dict_pre!{2 => 34}, 3 => dict_pre!{3 => 55}} -> HashMap {2 : {2 : 34}, 3: {3 : 55}}`
 
 
-## Vector (list) Comprehensions
+- [TLDR;](#tldr)
+  * [Macros](#macros)
+  * [Vector (list) Comprehensions](#vector-list-comprehensions)
+    + [`comp!`](#comp)
+    + [Examples](#ex)
+  * [HashMap (dictionary) Comprehensions](#hashmap-dictionary-comprehensions)
+    + [`dcomp!`](#dcomp)
+    + [Examples](#ex-1)
+  * [HashMap (dictionary) Literal](#hashmap-dictionary-literal)
+    + [`dict!`](#dict)
+- [Preallocation Variants](#preallocation-variants)
+  * [Preallocating Vector (list) Comprehensions](#preallocating-vector-list-comprehensions)
+    + [`comp_pre!`](#comp_pre)
+  * [Preallocating HashMap (dictionary) Comprehensions](#preallocating-hashmap-dictionary-comprehensions)
+    + [`dcomp_pre!`](#dcomp_pre)
+  * [Preallocating HashMap (dictionary) Literal](#preallocating-hashmap-dictionary-literal)
+    + [`dict_pre!`](#dict_pre)
+      - [Examples](#ex-2)
 
+## Vector (list) Comprehensions
+### `comp!`
 - Any `Iterator` or implementor of `IntoIterator`
 - Inline localized declarations `let`s and conditionals `if`s at any level for total flexibility
 
@@ -88,7 +107,7 @@ vec![
 ```
 
 ## HashMap (dictionary) Comprehensions
-
+### `dcomp!`
 - Similar to `comp!` except for `dcomp!` the expression inserted is of the form `key => value` 
 
 ### Ex. 
@@ -110,6 +129,9 @@ dcomp![x=>y+zz*z; for x in 1..4, let y=x*x+4, let z = 3*y+x, if z>20; for yy in 
 ```
 
 ## HashMap (dictionary) Literal
+### `dict!`
+
+- Write `HashMap`s in literal form
 
 ```rust
 
