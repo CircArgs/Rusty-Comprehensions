@@ -152,20 +152,20 @@ dict!{"hello" => 5, "world" => 13, "!" => 8}
 ## Preallocating Vector (list) Comprehensions
 
 ### `comp_pre!`
-- before inserting into a `Vec`, this macros infer the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
+- before inserting into a `Vec`, this macrs infesr the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
 
 ## Preallocating HashMap (dictionary) Comprehensions
 
 ### `dcomp_pre!`
 
-- before inserting into a `HashMap`, this macros infer the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
+- before inserting into a `HashMap`, this macro infers the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
 
 
 ## Preallocating HashMap (dictionary) Literal
 
 ### `dict_pre!`
 
-- before inserting into a `HashMap`, this macros infer the size of the final `HashMap` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
+- before inserting into a `HashMap`, this macro infers the size of the final `HashMap` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
 
 #### Ex.
 ```rust
