@@ -158,7 +158,7 @@ dict!{"hello" => 5, "world" => 13, "!" => 8}
 ## Preallocating HashMap (dictionary) Comprehensions
 
 ### `dcomp_pre!`
-- see [HashMap (dictionary) Comprehension](#hashmap-dictionary-comprehensionsn) for examples
+- see [HashMap (dictionary) Comprehension](#hashmap-dictionary-comprehensions) for examples
 - this differs from `dcomp!` in that before inserting into a `HashMap`, this macro infers the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
 
 
