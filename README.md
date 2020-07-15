@@ -166,7 +166,7 @@ dict!{"hello" => 5, "world" => 13, "!" => 8}
 
 ### `dict_pre!`
 - see [HashMap (dictionary) Literal](#hashmap-dictionary-literal) for examples
-- this differs from `dict!` in that before inserting into a `HashMap`, this macro infers the size of the final `HashMap` by accounting for the ltoal number of `key => value` pairs and attempts to `reserve` this memory
+- this differs from `dict!` in that before inserting into a `HashMap`, this macro infers the size of the final `HashMap` by accounting for the total number of `key => value` pairs and attempts to `reserve` this memory
 
 #### Ex.
 ```rust
