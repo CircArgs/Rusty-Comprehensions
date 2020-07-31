@@ -153,7 +153,7 @@ dict!{"hello" => 5, "world" => 13, "!" => 8}
 
 ### `comp_pre!`
 - see [Vector (list) Comprehension](#vector-list-comprehensions) for examples
-- this differs from `comp!` in that before inserting into a `Vec`, this macrs infesr the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
+- this differs from `comp!` in that before inserting into a `Vec`, this macro infers the size of the final `Vec` by accounting for the lower bounds of each `Iterator` as given by `.size_hint()` and attempts to `reserve` this memory
 
 ## Preallocating HashMap (dictionary) Comprehensions
 
